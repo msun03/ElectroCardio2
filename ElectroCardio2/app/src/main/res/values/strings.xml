@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">ElectroCardio2</string>
+
+    <string name="electrocardio">Electro-Cardio</string>
+    <string name="btConnect">Bluetooth Connect</string>
+    <string name="btDisconnect">Disconnect</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="streamOn">Stream On</string>
+    <string name="streamOff">Stream Off</string>
+
+    <string name="action_settings">Settings</string>
+</resources>
