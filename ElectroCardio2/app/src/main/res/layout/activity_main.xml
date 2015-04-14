@@ -24,17 +24,26 @@
         android:paddingBottom="12dp" />
 
     <com.jjoe64.graphview.GraphView
-        android:id="@+id/heartRateGraph"
+        android:id="@+id/hrGraph"
         android:layout_width="match_parent"
         android:layout_height="200dip"
         android:layout_below="@id/electrocardio" />
 
+    <ToggleButton
+        android:id="@+id/streamToggle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/hrGraph"
+        android:checked="false"
+        android:textOff="Start Stream"
+        android:textOn="Stop Stream" />
+
     <LinearLayout
-        android:id="@+id/bluetoothButtons"
+        android:id="@+id/btButtons"
 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/heartRateGraph"
+        android:layout_below="@id/streamToggle"
         android:orientation="horizontal">
 
         <Button

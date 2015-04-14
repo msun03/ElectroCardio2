@@ -5,6 +5,11 @@
     <string name="btConnect">Bluetooth Connect</string>
     <string name="btDisconnect">Disconnect</string>
     <string name="bluetooth">Bluetooth</string>
+    <string name="bluetoothOn">Bluetooth On</string>
+    <string name="bluetoothOff">Bluetooth Off</string>
+    <string name="scan">Scan for Devices</string>
+    <string name="pairedDevices">Paired Devices</string>
+
     <string name="streamOn">Stream On</string>
     <string name="streamOff">Stream Off</string>
 

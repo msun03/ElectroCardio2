@@ -2,19 +2,18 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
     <TextView
         android:id="@+id/bluetooth"
-        android:text="@string/bluetooth"
 
+        android:text="@string/bluetooth"
         android:textSize="@dimen/abc_text_size_large_material"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
 
         android:background="#0174DF"
-
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingTop="12dp"
@@ -24,10 +23,9 @@
 
     <ListView
         android:id="@+id/listView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/bluetooth" >
 
-    </ListView>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bluetooth"/>
 
 </RelativeLayout>
