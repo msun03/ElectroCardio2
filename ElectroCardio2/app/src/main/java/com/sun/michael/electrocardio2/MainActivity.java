@@ -41,16 +41,21 @@ public class MainActivity extends Activity implements View.OnClickListener{
     static boolean Stream;
     static boolean AutoScrollX;
 
+    Button bXminus;
+    Button bXplus;
+    ToggleButton toggleScroll;
+    ToggleButton toggleLock;
+    ToggleButton toggleStream;
+
     Button bluetoothConnect;
     Button bluetoothDisconnect;
-    ToggleButton toggleStream;
 
     static LinearLayout GraphView;
     static GraphView graphView;
     static GraphViewSeries Series;
 
     private static double graph2LastXValue = 0;
-    private static int Xview=10;
+    private static int Xview = 10;
 
     Handler mHandler = new Handler() {
         @Override
@@ -122,6 +127,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         Bluetooth.getHandler(mHandler);
 
         GraphView = (LinearLayout)findViewById(R.id.hrGraph);
+        GraphView.setBackgroundColor(Color.BLACK);
         Series = new GraphViewSeries("Signal", new GraphViewStyle(Color.GREEN, 2), new GraphViewData[] {new GraphViewData(0, 0)});
         graphView = new LineGraphView(this, "Heart Rate");
 
@@ -143,6 +149,17 @@ public class MainActivity extends Activity implements View.OnClickListener{
         bluetoothDisconnect.setOnClickListener(this);
         toggleStream = (ToggleButton)findViewById(R.id.streamToggle);
         toggleStream.setOnClickListener(this);
+        bXminus = (Button)findViewById(R.id.bXminus);
+        bXminus.setOnClickListener(this);
+        bXplus = (Button)findViewById(R.id.bXplus);
+        bXplus.setOnClickListener(this);
+        toggleLock = (ToggleButton)findViewById(R.id.tbLock);
+        toggleLock.setOnClickListener(this);
+        toggleScroll = (ToggleButton)findViewById(R.id.tbScroll);
+        toggleScroll.setOnClickListener(this);
+        toggleStream = (ToggleButton)findViewById(R.id.streamToggle);
+        toggleStream.setOnClickListener(this);
+
         Lock = true;
         AutoScrollX = true;
         Stream = true;

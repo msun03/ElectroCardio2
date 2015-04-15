@@ -30,22 +30,21 @@
         android:layout_below="@id/electrocardio"
         android:orientation="horizontal"/>
 
-    <ToggleButton
-        android:id="@+id/streamToggle"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/hrGraph"
-        android:checked="false"
-        android:textOff="Start Stream"
-        android:textOn="Stop Stream" />
-
     <LinearLayout
-        android:id="@+id/btButtons"
-
+        android:id="@+id/streamButtons"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/streamToggle"
+        android:layout_height="45dp"
+        android:layout_below="@id/hrGraph"
         android:orientation="horizontal">
+
+        <ToggleButton
+            android:id="@+id/streamToggle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:textOff="Start Stream"
+            android:textOn="Stop Stream"
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/btConnect"
@@ -62,6 +61,51 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/graphButtons"
+
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal"
+        android:layout_below="@id/streamButtons"
+        android:weightSum="1">
+
+        <ToggleButton
+            android:id="@+id/tbScroll"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:checked="true"
+            android:textOff="Auto Scroll X"
+            android:textOn="Auto Scroll X"
+            android:layout_weight="0.2" />
+
+        <ToggleButton
+            android:id="@+id/tbLock"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:checked="true"
+            android:textOff="Lock X-Axis"
+            android:textOn="Lock X-Axis"
+            android:layout_weight="0.2" />
+
+        <Button
+            android:id="@+id/bXplus"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="+"
+            android:textSize="20dp"
+            android:layout_weight="0.3" />
+
+        <Button
+            android:id="@+id/bXminus"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="-"
+            android:textSize="20dp"
+            android:layout_weight="0.3" />
+
     </LinearLayout>
 
 </RelativeLayout>
