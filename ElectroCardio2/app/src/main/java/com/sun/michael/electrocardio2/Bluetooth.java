@@ -37,11 +37,11 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         }
     }
 
+    static Handler mHandler = new Handler();
+
     public static void getHandler(Handler handler){ //Bluetooth handler
         mHandler = handler;
     }
-
-    static Handler mHandler = new Handler();
 
     static ConnectedThread connectedThread;
     public static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -104,6 +104,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         pairedDevices = new ArrayList<String>();
         filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         devices = new ArrayList<BluetoothDevice>();
+
         receiver = new BroadcastReceiver(){
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -139,7 +140,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(receiver, filter);
         filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        registerReceiver(receiver, filter);
+        //registerReceiver(receiver, filter);
     }
 
     @Override
