@@ -23,11 +23,12 @@
         android:paddingRight="12dp"
         android:paddingBottom="12dp" />
 
-    <com.jjoe64.graphview.GraphView
+    <LinearLayout
         android:id="@+id/hrGraph"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="200dip"
-        android:layout_below="@id/electrocardio" />
+        android:layout_below="@id/electrocardio"
+        android:orientation="horizontal"/>
 
     <ToggleButton
         android:id="@+id/streamToggle"
