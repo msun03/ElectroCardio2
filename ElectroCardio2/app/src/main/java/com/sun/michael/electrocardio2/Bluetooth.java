@@ -30,6 +30,13 @@ import android.widget.Toast;
  */
 public class Bluetooth extends Activity implements OnItemClickListener{
 
+    public static void disconnect(){
+        if (connectedThread != null) {
+            connectedThread.cancel();
+            connectedThread = null;
+        }
+    }
+
     public static void getHandler(Handler handler){ //Bluetooth handler
         mHandler = handler;
     }
@@ -78,16 +85,9 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         startActivityForResult(intent, 1);
     }
 
-    public static void disconnect(){
-        if (connectedThread != null) {
-            connectedThread.cancel();
-            connectedThread = null;
-        }
-    }
-
     private void getPairedDevices() {
         devicesArray = btAdapter.getBondedDevices();
-        if (devicesArray.size()>0){
+        if (devicesArray.size() > 0){
             for(BluetoothDevice device:devicesArray){
                 pairedDevices.add(device.getName());
             }
@@ -111,14 +111,18 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     devices.add(device);
                     String s = "";
-                    for(int a=0;a<pairedDevices.size();a++){
+                    for(int a = 0; a < pairedDevices.size(); a++){
                         if (device.getName().equals(pairedDevices.get(a))){
                             //append
                             s = "(Paired)";
                             break;
                         }
                     }
-                    listAdapter.add(device.getName()+" "+s+" "+"\n"+device.getAddress());
+                    listAdapter.add(device.getName() + " " + s + " " + "\n" + device.getAddress());
+
+                }else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
+
+                }else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)){
 
                 }else if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)){
                     if (btAdapter.getState() == btAdapter.STATE_OFF){
@@ -129,7 +133,12 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         };
 
         registerReceiver(receiver, filter);
+        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        registerReceiver(receiver, filter);
+        filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        registerReceiver(receiver, filter);
         filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(receiver, filter);
     }
 
     @Override
@@ -153,13 +162,13 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         if (btAdapter.isDiscovering()){
             btAdapter.cancelDiscovery();
         }
-        if (!listAdapter.getItem(arg2).contains("(Paired)")){
+        if (listAdapter.getItem(arg2).contains("(Paired)")){
 
             BluetoothDevice selectedDevice = devices.get(arg2);
             ConnectThread connect = new ConnectThread(selectedDevice);
             connect.start();
         }else {
-            Toast.makeText(getApplicationContext(), "Device is paired already", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Device is not paired", Toast.LENGTH_SHORT).show();
         }
     }
 
