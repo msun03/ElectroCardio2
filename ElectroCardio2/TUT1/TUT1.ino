@@ -1,4 +1,6 @@
 #define sensorPin A0
+float sensorValue = 0;
+float voltageValue = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -18,16 +20,14 @@ void loop() {
 
 void start() {
   while (1) {
+    sensorValue = analogRead(sensorPin);
+    voltageValue = sensorValue*5/1023;
     Serial.print('s');
-    Serial.print(floatMap(analogRead(sensorPin), 0, 1023, 0, 5), 2);
-    delay(5);
+    Serial.print(voltageValue,2);
+    delay(2);
 
     if (Serial.available() > 0) {
       if (Serial.read() == 'Q') return;
     }
   }
-}
-
-float floatMap(float x, float inMin, float inMax, float outMin, float outMax) {
-  return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }
