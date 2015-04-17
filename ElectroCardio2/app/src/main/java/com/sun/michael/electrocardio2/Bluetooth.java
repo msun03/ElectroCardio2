@@ -37,11 +37,10 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         }
     }
 
-    static Handler mHandler = new Handler();
-
     public static void getHandler(Handler handler){ //Bluetooth handler
         mHandler = handler;
     }
+    static Handler mHandler = new Handler();
 
     static ConnectedThread connectedThread;
     public static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -63,7 +62,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         setContentView(R.layout.activity_bluetooth);
         init();
 
-        if (btAdapter == null){
+        if (btAdapter==null){
             Toast.makeText(getApplicationContext(), "No bluetooth detected", Toast.LENGTH_SHORT).show();
             finish();
         }else{
@@ -104,7 +103,6 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         pairedDevices = new ArrayList<String>();
         filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         devices = new ArrayList<BluetoothDevice>();
-
         receiver = new BroadcastReceiver(){
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -140,7 +138,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(receiver, filter);
         filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        //registerReceiver(receiver, filter);
+        registerReceiver(receiver, filter);
     }
 
     @Override
@@ -244,7 +242,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         StringBuffer sbb = new StringBuffer();
         public void run() {
 
-            byte[] buffer;  // buffer store for the stream
+            byte[] buffer = new byte[1024];;  // buffer store for the stream
             int bytes; // bytes returned from read()
 
             // Keep listening to the InputStream until an exception occurs
@@ -257,7 +255,6 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                         e.printStackTrace();
                     }
 
-                    buffer = new byte[1024];
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
                     // Send the obtained bytes to the UI activity
@@ -273,8 +270,8 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
             try {
                 mmOutStream.write(income.getBytes());
-                for(int i = 0; i < income.getBytes().length; i++)
-                    Log.v("outStream" + Integer.toString(i),Character.toString((char)(Integer.parseInt(Byte.toString(income.getBytes()[i])))));
+                for(int i=0;i<income.getBytes().length;i++)
+                    Log.v("outStream"+Integer.toString(i),Character.toString((char)(Integer.parseInt(Byte.toString(income.getBytes()[i])))));
                 try {
                     Thread.sleep(20);
                 } catch (InterruptedException e) {

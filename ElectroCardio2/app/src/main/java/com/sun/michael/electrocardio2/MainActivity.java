@@ -13,6 +13,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -21,11 +22,8 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.GraphView.GraphViewData;
-import com.jjoe64.graphview.GraphView.LegendAlign;
-import com.jjoe64.graphview.GraphViewSeries;
-import com.jjoe64.graphview.GraphViewSeries.GraphViewStyle;
-import com.jjoe64.graphview.LineGraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 public class MainActivity extends Activity implements View.OnClickListener{
 
@@ -37,20 +35,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
         super.onBackPressed();
     }
 
-    static boolean Lock;
-    static boolean Stream;
-    static boolean AutoScrollX;
+    GraphView graphView;
+    LineGraphSeries Series;
 
     Button bluetoothConnect;
     Button bluetoothDisconnect;
     ToggleButton toggleStream;
-
-    static LinearLayout GraphView;
-    static GraphView graphView;
-    static GraphViewSeries Series;
-
-    private static double graph2LastXValue = 0;
-    private static int Xview=10;
 
     Handler mHandler = new Handler() {
         @Override
@@ -61,39 +51,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 case Bluetooth.SUCCESS_CONNECT:
                     Bluetooth.connectedThread = new Bluetooth.ConnectedThread((BluetoothSocket) msg.obj);
                     Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_SHORT).show();
-                    String s = "successfully connected";
+                    String s = "Successfully connected";
                     Bluetooth.connectedThread.start();
                     break;
-
                 case Bluetooth.MESSAGE_READ:
-
                     byte[] readBuf = (byte[]) msg.obj;
-                    String strIncom = new String(readBuf, 0, 5);                 // create string from bytes array
-
+                    String strIncom = new String(readBuf, 0, 5);
                     Log.d("strIncom", strIncom);
-                    if (strIncom.indexOf('.')==2 && strIncom.indexOf('s')==0){
-                        strIncom = strIncom.replace("s", "");
-                        if (isFloatNumber(strIncom)){
-                            Series.appendData(new GraphViewData(graph2LastXValue,Double.parseDouble(strIncom)),AutoScrollX);
-
-                            //X-axis control
-                            if (graph2LastXValue >= Xview && Lock == true){
-                                Series.resetData(new GraphViewData[] {});
-                                graph2LastXValue = 0;
-                            } else
-                                graph2LastXValue += 0.1;
-
-                            if(Lock == true)
-                                graphView.setViewPort(0, Xview);
-                            else
-                                graphView.setViewPort(graph2LastXValue-Xview, Xview);
-
-                            //refresh
-                            GraphView.removeView(graphView);
-                            GraphView.addView(graphView);
-                        }
-                    }
-                    break;
             }
         }
 
@@ -121,19 +85,22 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         Bluetooth.getHandler(mHandler);
 
-        GraphView = (LinearLayout)findViewById(R.id.hrGraph);
-        Series = new GraphViewSeries("Signal", new GraphViewStyle(Color.GREEN, 2), new GraphViewData[] {new GraphViewData(0, 0)});
-        graphView = new LineGraphView(this, "Heart Rate");
+        graphView = (GraphView)findViewById(R.id.hrGraph);
 
-        graphView.setViewPort(0, Xview);
-        graphView.setScrollable(true);
-        graphView.setScalable(true);
-        graphView.setShowLegend(true);
-        graphView.setLegendAlign(LegendAlign.BOTTOM);
-        graphView.setManualYAxis(true);
-        graphView.setManualYAxisBounds(5, 0);
-        graphView.addSeries(Series);
-        GraphView.addView(graphView);
+        /*LineGraphSeries<DataPoint> exampleSeries = new LineGraphSeries<DataPoint>(new DataPoint[] {
+            new DataPoint(0, 1),
+            new DataPoint(1, 5),
+            new DataPoint(2, 3),
+            new DataPoint(3, 2),
+            new DataPoint(4, 6)
+        });*/
+
+        graphView.getViewport().setScalable(true);
+        graphView.getViewport().setScrollable(true);
+        graphView.getViewport().setYAxisBoundsManual(true);
+        graphView.getViewport().setMinY(0);
+        graphView.getViewport().setMaxY(5.0);
+        //graphView.addSeries(exampleSeries);
     }
 
     void initializeButtons(){
@@ -143,12 +110,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         bluetoothDisconnect.setOnClickListener(this);
         toggleStream = (ToggleButton)findViewById(R.id.streamToggle);
         toggleStream.setOnClickListener(this);
-        Lock = true;
-        AutoScrollX = true;
-        Stream = true;
     }
 
-    @Override
     public void onClick(View v){
 
         // TODO Auto-generated method stub
