@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "com.sun.michael.electrocardio2"
         minSdkVersion 9
-        targetSdkVersion 21
+        targetSdkVersion 13
         versionCode 1
         versionName "1.0"
     }

@@ -125,7 +125,6 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                     }
                 }
             }
-
         };
 
         registerReceiver(receiver, filter);

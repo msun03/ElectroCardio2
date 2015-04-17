@@ -79,10 +79,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
                         strIncom = strIncom.replace("s", "");
                         if (isFloatNumber(strIncom)){
                             Series.appendData(new GraphViewData(graph2LastXValue,Double.parseDouble(strIncom)),AutoScrollX);
+                            graphView.redrawAll();
 
                             //X-axis control
                             if (graph2LastXValue >= Xview && Lock == true){
-                                Series.resetData(new GraphViewData[] {});
+                                Series.resetData(new GraphViewData[]{});
                                 graph2LastXValue = 0;
                             } else
                                 graph2LastXValue += 0.1;
@@ -95,6 +96,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                             //refresh
                             GraphView.removeView(graphView);
                             GraphView.addView(graphView);
+                            graphView.invalidate();
                         }
                     }
                     break;
