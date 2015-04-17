@@ -42,17 +42,17 @@ public class MainActivity extends Activity implements View.OnClickListener{
     static boolean AutoScrollX;//auto scroll to the last x value
     static boolean Stream;//Start or stop streaming
 
-    ToggleButton toggleStream;
-
     static LinearLayout GraphView;
     static GraphView graphView;
     static GraphViewSeries Series;
 
+    Button bluetoothConnect;
+    Button bluetoothDisconnect;
+    ToggleButton toggleStream;
+
     private static double graph2LastXValue = 0;
     private static int Xview=10;
 
-    Button bluetoothConnect;
-    Button bluetoothDisconnect;
 
     Handler mHandler = new Handler(){
         @Override
@@ -66,35 +66,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
                     String s = "successfully connected";
                     Bluetooth.connectedThread.start();
                     break;
-                case Bluetooth.MESSAGE_READ:
-
-                    byte[] readBuf = (byte[]) msg.obj;
-                    String strIncom = new String(readBuf, 0, 5);                 // create string from bytes array
-
-                    Log.d("strIncom", strIncom);
-                    if (strIncom.indexOf('.')==2 && strIncom.indexOf('s')==0){
-                        strIncom = strIncom.replace("s", "");
-                        if (isFloatNumber(strIncom)){
-                            Series.appendData(new GraphViewData(graph2LastXValue,Double.parseDouble(strIncom)),AutoScrollX);
-
-                            //X-axis control
-                            if (graph2LastXValue >= Xview && Lock == true){
-                                Series.resetData(new GraphViewData[] {});
-                                graph2LastXValue = 0;
-                            }else graph2LastXValue += 0.1;
-
-                            if(Lock == true)
-                                graphView.setViewPort(0, Xview);
-                            else
-                                graphView.setViewPort(graph2LastXValue-Xview, Xview);
-
-                            //refresh
-                            GraphView.removeView(graphView);
-                            GraphView.addView(graphView);
-                        }
-                    }
-
-                    break;
             }
         }
 
@@ -107,19 +78,18 @@ public class MainActivity extends Activity implements View.OnClickListener{
             }
             return true;
         }
-
     };
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-        init();
-        ButtonInit();
+        initializeGraph();
+        initializeButtons();
     }
 
-    void init(){
+    void initializeGraph(){
 
         Bluetooth.gethandler(mHandler);
 
@@ -127,8 +97,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
         GraphView = (LinearLayout) findViewById(R.id.hrGraph);
         GraphView.setBackgroundColor(Color.BLACK);
         // init example series data-------------------
-        Series = new GraphViewSeries("Signal", new GraphViewStyle(Color.GREEN, 2), new GraphViewData[] {new GraphViewData(0, 0)});
-        graphView = new LineGraphView(this, "Graph");
+        Series = new GraphViewSeries("Signal",
+                new GraphViewStyle(Color.GREEN, 2),//color and thickness of the line
+                new GraphViewData[] {new GraphViewData(0, 0)});
+        graphView = new LineGraphView(
+                this // context
+                , "Graph" // heading
+        );
 
         graphView.setViewPort(0, Xview);
         graphView.setScrollable(true);
@@ -141,16 +116,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
         GraphView.addView(graphView);
     }
 
-    void ButtonInit(){
+    void initializeButtons(){
         bluetoothConnect = (Button)findViewById(R.id.btConnect);
         bluetoothConnect.setOnClickListener(this);
         bluetoothDisconnect = (Button)findViewById(R.id.btDisconnect);
         bluetoothDisconnect.setOnClickListener(this);
         toggleStream = (ToggleButton)findViewById(R.id.streamToggle);
         toggleStream.setOnClickListener(this);
-        Lock = true;
-        AutoScrollX = true;
-        Stream = true;
     }
 
     public void onClick(View v){
