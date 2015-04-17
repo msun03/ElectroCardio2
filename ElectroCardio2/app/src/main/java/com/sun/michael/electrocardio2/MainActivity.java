@@ -22,8 +22,11 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.GraphView.GraphViewData;
+import com.jjoe64.graphview.GraphView.LegendAlign;
+import com.jjoe64.graphview.GraphViewSeries;
+import com.jjoe64.graphview.GraphViewSeries.GraphViewStyle;
+import com.jjoe64.graphview.LineGraphView;
 
 public class MainActivity extends Activity implements View.OnClickListener{
 
@@ -35,29 +38,34 @@ public class MainActivity extends Activity implements View.OnClickListener{
         super.onBackPressed();
     }
 
-    GraphView graphView;
-    LineGraphSeries Series;
+    static boolean Lock;//whether lock the x-axis to 0-5
+    static boolean AutoScrollX;//auto scroll to the last x value
+    static boolean Stream;//Start or stop streaming
+
+    static LinearLayout GraphView;
+    static GraphView graphView;
+    static GraphViewSeries Series;
 
     Button bluetoothConnect;
     Button bluetoothDisconnect;
     ToggleButton toggleStream;
 
-    Handler mHandler = new Handler() {
+    private static double graph2LastXValue = 0;
+    private static int Xview=10;
+
+
+    Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
             super.handleMessage(msg);
-            switch (msg.what) {
+            switch(msg.what){
                 case Bluetooth.SUCCESS_CONNECT:
-                    Bluetooth.connectedThread = new Bluetooth.ConnectedThread((BluetoothSocket) msg.obj);
+                    Bluetooth.connectedThread = new Bluetooth.ConnectedThread((BluetoothSocket)msg.obj);
                     Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_SHORT).show();
-                    String s = "Successfully connected";
+                    String s = "successfully connected";
                     Bluetooth.connectedThread.start();
                     break;
-                case Bluetooth.MESSAGE_READ:
-                    byte[] readBuf = (byte[]) msg.obj;
-                    String strIncom = new String(readBuf, 0, 5);
-                    Log.d("strIncom", strIncom);
             }
         }
 
@@ -83,24 +91,29 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     void initializeGraph(){
 
-        Bluetooth.getHandler(mHandler);
+        Bluetooth.gethandler(mHandler);
 
-        graphView = (GraphView)findViewById(R.id.hrGraph);
+        //init graphview
+        GraphView = (LinearLayout) findViewById(R.id.hrGraph);
+        GraphView.setBackgroundColor(Color.BLACK);
+        // init example series data-------------------
+        Series = new GraphViewSeries("Signal",
+                new GraphViewStyle(Color.GREEN, 2),//color and thickness of the line
+                new GraphViewData[] {new GraphViewData(0, 0)});
+        graphView = new LineGraphView(
+                this // context
+                , "Graph" // heading
+        );
 
-        /*LineGraphSeries<DataPoint> exampleSeries = new LineGraphSeries<DataPoint>(new DataPoint[] {
-            new DataPoint(0, 1),
-            new DataPoint(1, 5),
-            new DataPoint(2, 3),
-            new DataPoint(3, 2),
-            new DataPoint(4, 6)
-        });*/
-
-        graphView.getViewport().setScalable(true);
-        graphView.getViewport().setScrollable(true);
-        graphView.getViewport().setYAxisBoundsManual(true);
-        graphView.getViewport().setMinY(0);
-        graphView.getViewport().setMaxY(5.0);
-        //graphView.addSeries(exampleSeries);
+        graphView.setViewPort(0, Xview);
+        graphView.setScrollable(true);
+        graphView.setScalable(true);
+        graphView.setShowLegend(true);
+        graphView.setLegendAlign(LegendAlign.BOTTOM);
+        graphView.setManualYAxis(true);
+        graphView.setManualYAxisBounds(5, 0);
+        graphView.addSeries(Series); // data
+        GraphView.addView(graphView);
     }
 
     void initializeButtons(){

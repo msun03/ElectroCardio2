@@ -37,7 +37,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         }
     }
 
-    public static void getHandler(Handler handler){ //Bluetooth handler
+    public static void gethandler(Handler handler){ //Bluetooth handler
         mHandler = handler;
     }
     static Handler mHandler = new Handler();
