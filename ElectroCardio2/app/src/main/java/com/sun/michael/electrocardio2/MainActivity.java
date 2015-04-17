@@ -38,11 +38,14 @@ public class MainActivity extends Activity implements View.OnClickListener{
     }
 
     static boolean Lock;
-    static boolean Stream;
     static boolean AutoScrollX;
+    static boolean Stream;
 
-    Button bluetoothConnect;
-    Button bluetoothDisconnect;
+    Button bXminus;
+    Button bXplus;
+
+    ToggleButton tbLock;
+    ToggleButton tbScroll;
     ToggleButton toggleStream;
 
     static LinearLayout GraphView;
@@ -51,6 +54,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private static double graph2LastXValue = 0;
     private static int Xview=10;
+    Button bluetoothConnect, bluetoothDisconnect;
 
     Handler mHandler = new Handler() {
         @Override
@@ -140,10 +144,25 @@ public class MainActivity extends Activity implements View.OnClickListener{
     void initializeButtons(){
         bluetoothConnect = (Button)findViewById(R.id.btConnect);
         bluetoothConnect.setOnClickListener(this);
+
         bluetoothDisconnect = (Button)findViewById(R.id.btDisconnect);
         bluetoothDisconnect.setOnClickListener(this);
+
+        bXminus = (Button)findViewById(R.id.bXminus);
+        bXminus.setOnClickListener(this);
+
+        bXplus = (Button)findViewById(R.id.bXplus);
+        bXplus.setOnClickListener(this);
+
+        tbLock = (ToggleButton)findViewById(R.id.tbLock);
+        tbLock.setOnClickListener(this);
+
+        tbScroll = (ToggleButton)findViewById(R.id.tbScroll);
+        tbScroll.setOnClickListener(this);
+
         toggleStream = (ToggleButton)findViewById(R.id.streamToggle);
         toggleStream.setOnClickListener(this);
+
         Lock = true;
         AutoScrollX = true;
         Stream = true;
@@ -160,6 +179,26 @@ public class MainActivity extends Activity implements View.OnClickListener{
             case R.id.btDisconnect:
                 Bluetooth.disconnect();
                 Toast.makeText(getApplicationContext(), "Disconnected!", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.bXminus:
+                if (Xview>1) Xview--;
+                break;
+            case R.id.bXplus:
+                if (Xview<30) Xview++;
+                break;
+            case R.id.tbLock:
+                if (tbLock.isChecked()){
+                    Lock = true;
+                }else{
+                    Lock = false;
+                }
+                break;
+            case R.id.tbScroll:
+                if (tbScroll.isChecked()){
+                    AutoScrollX = true;
+                }else{
+                    AutoScrollX = false;
+                }
                 break;
             case R.id.streamToggle:
                 if (toggleStream.isChecked()){
