@@ -30,22 +30,22 @@
         android:layout_below="@id/electrocardio"
         android:orientation="horizontal"/>
 
-    <ToggleButton
-        android:id="@+id/streamToggle"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/hrGraph"
-        android:checked="false"
-        android:textOff="Start Stream"
-        android:textOn="Stop Stream" />
-
     <LinearLayout
         android:id="@+id/btButtons"
 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/streamToggle"
+        android:layout_below="@id/hrGraph"
         android:orientation="horizontal">
+
+        <ToggleButton
+            android:id="@+id/streamToggle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:textOff="Start Stream"
+            android:textOn="Stop Stream"
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/btConnect"
@@ -63,5 +63,50 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/graphToggleButtons"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btButtons"
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+        <ToggleButton
+            android:id="@+id/tbScroll"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:textOff="Auto Scroll"
+            android:textOn="Auto Scroll"
+            android:layout_weight="2.3"
+            />
+
+        <ToggleButton
+            android:id="@+id/tbLock"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:textOff="Lock X-Axis"
+            android:textOn="Lock X-Axis"
+            android:layout_weight="2.3"
+            />
+
+        <Button
+            android:id="@+id/bXplus"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:layout_weight="2.7"/>
+        <Button
+
+            android:id="@+id/bXminus"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:layout_weight="2.7"/>
+
+    </LinearLayout>
+
 
 </RelativeLayout>

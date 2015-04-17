@@ -119,9 +119,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     void initializeGraph(){
 
-        Bluetooth.getHandler(mHandler);
+        Bluetooth.gethandler(mHandler);
 
         GraphView = (LinearLayout)findViewById(R.id.hrGraph);
+        GraphView.setBackgroundColor(Color.BLACK);
         Series = new GraphViewSeries("Signal", new GraphViewStyle(Color.GREEN, 2), new GraphViewData[] {new GraphViewData(0, 0)});
         graphView = new LineGraphView(this, "Heart Rate");
 
