@@ -167,7 +167,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
             BluetoothDevice selectedDevice = devices.get(arg2);
             ConnectThread connect = new ConnectThread(selectedDevice);
             connect.start();
-        }else {
+        } else {
             Toast.makeText(getApplicationContext(), "Device is not paired", Toast.LENGTH_SHORT).show();
         }
     }
@@ -242,7 +242,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         StringBuffer sbb = new StringBuffer();
         public void run() {
 
-            byte[] buffer = new byte[1024];;  // buffer store for the stream
+            byte[] buffer = new byte[1024];  // buffer store for the stream
             int bytes; // bytes returned from read()
 
             // Keep listening to the InputStream until an exception occurs
