@@ -18,57 +18,16 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
 
-        android:paddingTop="12dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:paddingBottom="12dp" />
-
-    <LinearLayout
-        android:id="@+id/hrGraph"
-        android:layout_width="fill_parent"
-        android:layout_height="200dip"
-        android:layout_below="@id/electrocardio"
-        android:orientation="horizontal"/>
-
-    <LinearLayout
-        android:id="@+id/btButtons"
-
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:layout_below="@id/hrGraph"
-        android:orientation="horizontal">
-
-        <ToggleButton
-            android:id="@+id/streamToggle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:textOff="Start Stream"
-            android:textOn="Stop Stream"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/btConnect"
-            android:text="@string/btConnect"
-
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/btDisconnect"
-            android:text="@string/btDisconnect"
-
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-    </LinearLayout>
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp" />
 
     <LinearLayout
         android:id="@+id/graphToggleButtons"
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:layout_below="@id/btButtons"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal"
         android:weightSum="10">
 
@@ -108,5 +67,46 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/btButtons"
+
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/graphToggleButtons"
+        android:orientation="horizontal">
+
+        <ToggleButton
+            android:id="@+id/streamToggle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:textOff="Start Stream"
+            android:textOn="Stop Stream"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btConnect"
+            android:text="@string/btConnect"
+
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btDisconnect"
+            android:text="@string/btDisconnect"
+
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/hrGraph"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/electrocardio"
+        android:layout_above="@id/btButtons"
+        android:orientation="horizontal"/>
 
 </RelativeLayout>
