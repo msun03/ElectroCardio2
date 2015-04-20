@@ -24,35 +24,29 @@ import com.jjoe64.graphview.LineGraphView;
 
 public class MainActivity extends Activity implements View.OnClickListener{
 
-    @Override
-    public void onBackPressed() {
-        // TODO Auto-generated method stub
-        if (Bluetooth.connectedThread != null) {
-            Bluetooth.connectedThread.write("Q");
-        }//Stop streaming
-        super.onBackPressed();
-    }
-
+    // Create variables
     static boolean Lock;
     static boolean AutoScrollX;
     static boolean Stream;
 
-    Button bXminus;
-    Button bXplus;
+    Button xMinus;
+    Button xPlus;
 
-    ToggleButton tbLock;
-    ToggleButton tbScroll;
-    ToggleButton toggleStream;
+    ToggleButton lockToggle;
+    ToggleButton scrollToggle;
+    ToggleButton streamToggle;
 
     static LinearLayout GraphView;
     static GraphView graphView;
     static GraphViewSeries Series;
 
-    private static double graph2LastXValue = 0;
-    private static int Xview=10;
+    private static double graphLastXValue = 0;
+    private static int xView = 10;
+
     Button bluetoothConnect, bluetoothDisconnect;
 
-    Handler mHandler = new Handler() {
+    /** Handler for managing the threads. */
+    Handler myHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
@@ -61,7 +55,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 case Bluetooth.SUCCESS_CONNECT:
                     Bluetooth.connectedThread = new Bluetooth.ConnectedThread((BluetoothSocket) msg.obj);
                     Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_SHORT).show();
-                    String s = "successfully connected";
+                    //String s = "successfully connected";
                     Bluetooth.connectedThread.start();
                     break;
 
@@ -74,25 +68,25 @@ public class MainActivity extends Activity implements View.OnClickListener{
                     if (strIncom.indexOf('.')==2 && strIncom.indexOf('s')==0){
                         strIncom = strIncom.replace("s", "");
                         if (isFloatNumber(strIncom)){
-                            Series.appendData(new GraphViewData(graph2LastXValue, Double.parseDouble(strIncom)), AutoScrollX);
+                            Series.appendData(new GraphViewData(graphLastXValue, Double.parseDouble(strIncom)), AutoScrollX);
 
                             //X-axis control
-                            if (graph2LastXValue >= Xview && Lock == true){
+                            if (graphLastXValue >= xView && Lock){
                                 Series.resetData(new GraphViewData[]{});
-                                graph2LastXValue = 0;
+                                graphLastXValue = 0;
                             } else
-                                graph2LastXValue += 0.1;
+                                graphLastXValue += 0.1;
 
-                            if(Lock == true)
-                                graphView.setViewPort(0, Xview);
+                            if(Lock)
+                                graphView.setViewPort(0, xView);
                             else
-                                graphView.setViewPort(graph2LastXValue-Xview, Xview);
+                                graphView.setViewPort(graphLastXValue-xView, xView);
 
                             //refresh
                             GraphView.removeView(graphView);
                             GraphView.addView(graphView);
                             graphView.redrawAll();
-                            graphView.invalidate();
+                            //graphView.invalidate();
                         }
                     }
                     break;
@@ -100,7 +94,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
         }
 
         public boolean isFloatNumber(String num){
-            //Log.d("checkfloatNum", num);
             try{
                 Double.parseDouble(num);
             } catch(NumberFormatException nfe) {
@@ -115,22 +108,30 @@ public class MainActivity extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         initializeGraph();
         initializeButtons();
+    }
 
+    /** Stop streaming if Back button pressed.*/
+    @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        if (Bluetooth.connectedThread != null) {
+            Bluetooth.connectedThread.write("Q");
+        }
+        super.onBackPressed();
     }
 
     void initializeGraph(){
 
-        Bluetooth.gethandler(mHandler);
+        Bluetooth.getHandler(myHandler);
 
         GraphView = (LinearLayout)findViewById(R.id.hrGraph);
         GraphView.setBackgroundColor(Color.BLACK);
         Series = new GraphViewSeries("Signal", new GraphViewStyle(Color.GREEN, 2), new GraphViewData[] {new GraphViewData(0, 0)});
         graphView = new LineGraphView(this, "Heart Rate");
 
-        graphView.setViewPort(0, Xview);
+        graphView.setViewPort(0, xView);
         graphView.setScrollable(true);
         graphView.setScalable(true);
         graphView.setShowLegend(true);
@@ -148,26 +149,27 @@ public class MainActivity extends Activity implements View.OnClickListener{
         bluetoothDisconnect = (Button)findViewById(R.id.btDisconnect);
         bluetoothDisconnect.setOnClickListener(this);
 
-        bXminus = (Button)findViewById(R.id.bXminus);
-        bXminus.setOnClickListener(this);
+        xMinus = (Button)findViewById(R.id.bXminus);
+        xMinus.setOnClickListener(this);
 
-        bXplus = (Button)findViewById(R.id.bXplus);
-        bXplus.setOnClickListener(this);
+        xPlus = (Button)findViewById(R.id.bXplus);
+        xPlus.setOnClickListener(this);
 
-        tbLock = (ToggleButton)findViewById(R.id.tbLock);
-        tbLock.setOnClickListener(this);
+        lockToggle = (ToggleButton)findViewById(R.id.tbLock);
+        lockToggle.setOnClickListener(this);
 
-        tbScroll = (ToggleButton)findViewById(R.id.tbScroll);
-        tbScroll.setOnClickListener(this);
+        scrollToggle = (ToggleButton)findViewById(R.id.tbScroll);
+        scrollToggle.setOnClickListener(this);
 
-        toggleStream = (ToggleButton)findViewById(R.id.streamToggle);
-        toggleStream.setOnClickListener(this);
+        streamToggle = (ToggleButton)findViewById(R.id.streamToggle);
+        streamToggle.setOnClickListener(this);
 
         Lock = true;
         AutoScrollX = true;
         Stream = true;
     }
 
+    /** OnClickListener method for the buttons.*/
     @Override
     public void onClick(View v){
 
@@ -181,27 +183,27 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 Toast.makeText(getApplicationContext(), "Disconnected!", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bXminus:
-                if (Xview>1) Xview--;
+                if (xView>1) xView--;
                 break;
             case R.id.bXplus:
-                if (Xview<30) Xview++;
+                if (xView<30) xView++;
                 break;
             case R.id.tbLock:
-                if (tbLock.isChecked()){
+                if (lockToggle.isChecked()){
                     Lock = true;
                 }else{
                     Lock = false;
                 }
                 break;
             case R.id.tbScroll:
-                if (tbScroll.isChecked()){
+                if (scrollToggle.isChecked()){
                     AutoScrollX = true;
                 }else{
                     AutoScrollX = false;
                 }
                 break;
             case R.id.streamToggle:
-                if (toggleStream.isChecked()){
+                if (streamToggle.isChecked()){
                     if(Bluetooth.connectedThread != null)
                         Bluetooth.connectedThread.write("E");
                 } else {
