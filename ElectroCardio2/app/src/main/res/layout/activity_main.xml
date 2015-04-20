@@ -107,6 +107,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/electrocardio"
         android:layout_above="@id/btButtons"
-        android:orientation="horizontal"/>
+        android:orientation="horizontal"
+        android:keepScreenOn="true"/>
 
 </RelativeLayout>
