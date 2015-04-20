@@ -34,7 +34,7 @@
         android:id="@+id/btButtons"
 
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_below="@id/hrGraph"
         android:orientation="horizontal">
 
@@ -67,7 +67,7 @@
     <LinearLayout
         android:id="@+id/graphToggleButtons"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_below="@id/btButtons"
         android:orientation="horizontal"
         android:weightSum="10">

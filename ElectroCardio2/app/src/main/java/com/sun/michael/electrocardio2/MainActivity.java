@@ -2,19 +2,14 @@ package com.sun.michael.electrocardio2;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothSocket;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -33,7 +28,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
     public void onBackPressed() {
         // TODO Auto-generated method stub
         if (Bluetooth.connectedThread != null) {
-            Bluetooth.connectedThread.write("Q");}//Stop streaming
+            Bluetooth.connectedThread.write("Q");
+        }//Stop streaming
         super.onBackPressed();
     }
 
@@ -78,7 +74,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                     if (strIncom.indexOf('.')==2 && strIncom.indexOf('s')==0){
                         strIncom = strIncom.replace("s", "");
                         if (isFloatNumber(strIncom)){
-                            Series.appendData(new GraphViewData(graph2LastXValue,Double.parseDouble(strIncom)),AutoScrollX);
+                            Series.appendData(new GraphViewData(graph2LastXValue, Double.parseDouble(strIncom)), AutoScrollX);
 
                             //X-axis control
                             if (graph2LastXValue >= Xview && Lock == true){
@@ -96,7 +92,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                             GraphView.removeView(graphView);
                             GraphView.addView(graphView);
                             graphView.redrawAll();
-                            //graphView.invalidate();
+                            graphView.invalidate();
                         }
                     }
                     break;
@@ -119,8 +115,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         initializeGraph();
         initializeButtons();
+
     }
 
     void initializeGraph(){

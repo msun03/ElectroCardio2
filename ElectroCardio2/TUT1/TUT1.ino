@@ -3,7 +3,7 @@ float sensorValue = 0;
 float voltageValue = 0;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
 }
 
 void loop() {
