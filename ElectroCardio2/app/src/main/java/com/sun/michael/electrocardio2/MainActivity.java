@@ -55,22 +55,23 @@ public class MainActivity extends Activity implements View.OnClickListener{
             super.handleMessage(msg);
             switch (msg.what) {
                 case Bluetooth.SUCCESS_CONNECT:
-                    Bluetooth.connectedThread = new Bluetooth.ConnectedThread((BluetoothSocket) msg.obj);
-                    Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_SHORT).show();
+                    Bluetooth.connectedThread = new Bluetooth.ConnectedThread((BluetoothSocket)msg.obj);
+                    Toast.makeText(getApplicationContext(),"Connected!",Toast.LENGTH_SHORT).show();
                     //String s = "successfully connected";
                     Bluetooth.connectedThread.start();
                     break;
 
                 case Bluetooth.MESSAGE_READ:
 
-                    byte[] readBuf = (byte[]) msg.obj;
-                    String strIncom = new String(readBuf, 0, 5);                 // create string from bytes array
+                    byte[] readBuf = (byte[])msg.obj;
+                    String strIncom = new String(readBuf,0,5);                 //Create string from bytes array
 
                     Log.d("strIncom", strIncom);
-                    if (strIncom.indexOf('.')==2 && strIncom.indexOf('s')==0){
-                        strIncom = strIncom.replace("s", "");
+                    if (strIncom.indexOf('.') == 2 && strIncom.indexOf('s') == 0){
+                        strIncom = strIncom.replace("s","");
                         if (isFloatNumber(strIncom)){
-                            Series.appendData(new GraphViewData(graphLastXValue, Double.parseDouble(strIncom)), AutoScrollX);
+                            Series.appendData(new GraphViewData(graphLastXValue,
+                                    Double.parseDouble(strIncom)),AutoScrollX);
 
                             //X-axis control
                             if (graphLastXValue >= xView && Lock){
@@ -80,11 +81,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
                                 graphLastXValue += 0.1;
 
                             if(Lock)
-                                graphView.setViewPort(0, xView);
+                                graphView.setViewPort(0,xView);
                             else
-                                graphView.setViewPort(graphLastXValue-xView, xView);
+                                graphView.setViewPort(graphLastXValue-xView,xView);
 
-                            //refresh
+                            //Refresh
                             GraphView.removeView(graphView);
                             GraphView.addView(graphView);
                             graphView.redrawAll();
@@ -110,8 +111,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         //this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.
-                FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         initializeGraph();
         initializeButtons();
@@ -133,16 +134,17 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         GraphView = (LinearLayout)findViewById(R.id.hrGraph);
         GraphView.setBackgroundColor(Color.BLACK);
-        Series = new GraphViewSeries("Signal", new GraphViewStyle(Color.GREEN, 2), new GraphViewData[] {new GraphViewData(0, 0)});
-        graphView = new LineGraphView(this, "Heart Rate");
+        Series = new GraphViewSeries("Signal",new GraphViewStyle(Color.GREEN,2),
+                new GraphViewData[]{new GraphViewData(0,0)});
+        graphView = new LineGraphView(this,"Heart Rate");
 
-        graphView.setViewPort(0, xView);
+        graphView.setViewPort(0,xView);
         graphView.setScrollable(true);
         graphView.setScalable(true);
         graphView.setShowLegend(true);
         graphView.setLegendAlign(LegendAlign.BOTTOM);
         graphView.setManualYAxis(true);
-        graphView.setManualYAxisBounds(5, 0);
+        graphView.setManualYAxisBounds(5,0);
         graphView.addSeries(Series);
         GraphView.addView(graphView);
     }
@@ -188,10 +190,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 Toast.makeText(getApplicationContext(), "Disconnected!", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bXminus:
-                if (xView>1) xView--;
+                if (xView > 1) xView--;
                 break;
             case R.id.bXplus:
-                if (xView<30) xView++;
+                if (xView < 30) xView++;
                 break;
             case R.id.tbLock:
                 if (lockToggle.isChecked()){
