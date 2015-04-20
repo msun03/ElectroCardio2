@@ -16,10 +16,10 @@
         android:background="#0174DF"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="12dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:paddingBottom="12dp" />
+        android:paddingTop="14dp"
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp"
+        android:paddingBottom="14dp" />
 
     <ListView
         android:id="@+id/listView"

@@ -2,7 +2,7 @@
     <string name="app_name">ElectroCardio2</string>
 
     <string name="electrocardio">Electro-Cardio</string>
-    <string name="btConnect">Bluetooth Connect</string>
+    <string name="btConnect">Bluetooth</string>
     <string name="btDisconnect">Disconnect</string>
     <string name="bluetooth">Bluetooth</string>
 

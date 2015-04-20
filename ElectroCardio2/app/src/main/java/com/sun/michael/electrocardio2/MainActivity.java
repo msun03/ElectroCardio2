@@ -2,8 +2,6 @@ package com.sun.michael.electrocardio2;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothSocket;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -11,9 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -30,47 +26,77 @@ import com.jjoe64.graphview.LineGraphView;
 
 public class MainActivity extends Activity implements View.OnClickListener{
 
-    @Override
-    public void onBackPressed() {
-        // TODO Auto-generated method stub
-        if (Bluetooth.connectedThread != null) {
-            Bluetooth.connectedThread.write("Q");}//Stop streaming
-        super.onBackPressed();
-    }
+    // Create variables
+    static boolean Lock;
+    static boolean AutoScrollX;
+    static boolean Stream;
 
-    static boolean Lock;//whether lock the x-axis to 0-5
-    static boolean AutoScrollX;//auto scroll to the last x value
-    static boolean Stream;//Start or stop streaming
+    Button xMinus;
+    Button xPlus;
+
+    ToggleButton lockToggle;
+    ToggleButton scrollToggle;
+    ToggleButton streamToggle;
 
     static LinearLayout GraphView;
     static GraphView graphView;
     static GraphViewSeries Series;
 
-    Button bluetoothConnect;
-    Button bluetoothDisconnect;
-    ToggleButton toggleStream;
+    private static double graphLastXValue = 0;
+    private static int xView = 10;
 
-    private static double graph2LastXValue = 0;
-    private static int Xview=10;
+    Button bluetoothConnect, bluetoothDisconnect;
 
-
-    Handler mHandler = new Handler(){
+    /** Handler for managing the threads. */
+    Handler myHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
             super.handleMessage(msg);
-            switch(msg.what){
+            switch (msg.what) {
                 case Bluetooth.SUCCESS_CONNECT:
                     Bluetooth.connectedThread = new Bluetooth.ConnectedThread((BluetoothSocket)msg.obj);
-                    Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_SHORT).show();
-                    String s = "successfully connected";
+                    Toast.makeText(getApplicationContext(),"Connected!",Toast.LENGTH_SHORT).show();
+                    //String s = "successfully connected";
                     Bluetooth.connectedThread.start();
+                    break;
+
+                case Bluetooth.MESSAGE_READ:
+
+                    byte[] readBuf = (byte[])msg.obj;
+                    String strIncom = new String(readBuf,0,5);                 //Create string from bytes array
+
+                    Log.d("strIncom", strIncom);
+                    if (strIncom.indexOf('.') == 2 && strIncom.indexOf('s') == 0){
+                        strIncom = strIncom.replace("s","");
+                        if (isFloatNumber(strIncom)){
+                            Series.appendData(new GraphViewData(graphLastXValue,
+                                    Double.parseDouble(strIncom)),AutoScrollX);
+
+                            //X-axis control
+                            if (graphLastXValue >= xView && Lock){
+                                Series.resetData(new GraphViewData[]{});
+                                graphLastXValue = 0;
+                            } else
+                                graphLastXValue += 0.1;
+
+                            if(Lock)
+                                graphView.setViewPort(0,xView);
+                            else
+                                graphView.setViewPort(graphLastXValue-xView,xView);
+
+                            //Refresh
+                            GraphView.removeView(graphView);
+                            GraphView.addView(graphView);
+                            graphView.redrawAll();
+                            //graphView.invalidate();
+                        }
+                    }
                     break;
             }
         }
 
         public boolean isFloatNumber(String num){
-            //Log.d("checkfloatNum", num);
             try{
                 Double.parseDouble(num);
             } catch(NumberFormatException nfe) {
@@ -83,48 +109,75 @@ public class MainActivity extends Activity implements View.OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         initializeGraph();
         initializeButtons();
     }
 
+    /** Stop streaming if Back button pressed.*/
+    @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        if (Bluetooth.connectedThread != null) {
+            Bluetooth.connectedThread.write("Q");
+        }
+        super.onBackPressed();
+    }
+
     void initializeGraph(){
 
-        Bluetooth.gethandler(mHandler);
+        Bluetooth.getHandler(myHandler);
 
-        //init graphview
-        GraphView = (LinearLayout) findViewById(R.id.hrGraph);
+        GraphView = (LinearLayout)findViewById(R.id.hrGraph);
         GraphView.setBackgroundColor(Color.BLACK);
-        // init example series data-------------------
-        Series = new GraphViewSeries("Signal",
-                new GraphViewStyle(Color.GREEN, 2),//color and thickness of the line
-                new GraphViewData[] {new GraphViewData(0, 0)});
-        graphView = new LineGraphView(
-                this // context
-                , "Graph" // heading
-        );
+        Series = new GraphViewSeries("Signal",new GraphViewStyle(Color.GREEN,2),
+                new GraphViewData[]{new GraphViewData(0,0)});
+        graphView = new LineGraphView(this,"Heart Rate");
 
-        graphView.setViewPort(0, Xview);
+        graphView.setViewPort(0,xView);
         graphView.setScrollable(true);
         graphView.setScalable(true);
         graphView.setShowLegend(true);
         graphView.setLegendAlign(LegendAlign.BOTTOM);
         graphView.setManualYAxis(true);
-        graphView.setManualYAxisBounds(5, 0);
-        graphView.addSeries(Series); // data
+        graphView.setManualYAxisBounds(5,0);
+        graphView.addSeries(Series);
         GraphView.addView(graphView);
     }
 
     void initializeButtons(){
         bluetoothConnect = (Button)findViewById(R.id.btConnect);
         bluetoothConnect.setOnClickListener(this);
+
         bluetoothDisconnect = (Button)findViewById(R.id.btDisconnect);
         bluetoothDisconnect.setOnClickListener(this);
-        toggleStream = (ToggleButton)findViewById(R.id.streamToggle);
-        toggleStream.setOnClickListener(this);
+
+        xMinus = (Button)findViewById(R.id.bXminus);
+        xMinus.setOnClickListener(this);
+
+        xPlus = (Button)findViewById(R.id.bXplus);
+        xPlus.setOnClickListener(this);
+
+        lockToggle = (ToggleButton)findViewById(R.id.tbLock);
+        lockToggle.setOnClickListener(this);
+
+        scrollToggle = (ToggleButton)findViewById(R.id.tbScroll);
+        scrollToggle.setOnClickListener(this);
+
+        streamToggle = (ToggleButton)findViewById(R.id.streamToggle);
+        streamToggle.setOnClickListener(this);
+
+        Lock = true;
+        AutoScrollX = true;
+        Stream = true;
     }
 
+    /** OnClickListener method for the buttons.*/
+    @Override
     public void onClick(View v){
 
         // TODO Auto-generated method stub
@@ -136,8 +189,28 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 Bluetooth.disconnect();
                 Toast.makeText(getApplicationContext(), "Disconnected!", Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.bXminus:
+                if (xView > 1) xView--;
+                break;
+            case R.id.bXplus:
+                if (xView < 30) xView++;
+                break;
+            case R.id.tbLock:
+                if (lockToggle.isChecked()){
+                    Lock = true;
+                }else{
+                    Lock = false;
+                }
+                break;
+            case R.id.tbScroll:
+                if (scrollToggle.isChecked()){
+                    AutoScrollX = true;
+                }else{
+                    AutoScrollX = false;
+                }
+                break;
             case R.id.streamToggle:
-                if (toggleStream.isChecked()){
+                if (streamToggle.isChecked()){
                     if(Bluetooth.connectedThread != null)
                         Bluetooth.connectedThread.write("E");
                 } else {
