@@ -1,9 +1,14 @@
+#include <medianFilter.h>
+
+medianFilter Filter;
+
 #define sensorPin A0
 float sensorValue = 0;
 float voltageValue = 0;
 
 void setup() {
   Serial.begin(115200);
+  Filter.begin();
 }
 
 void loop() {
@@ -20,7 +25,7 @@ void loop() {
 
 void start() {
   while (1) {
-    sensorValue = analogRead(sensorPin);
+    sensorValue = Filter.run(analogRead(sensorPin));
     voltageValue = sensorValue*5/1023;
     Serial.print('s');
     Serial.print(voltageValue,2);

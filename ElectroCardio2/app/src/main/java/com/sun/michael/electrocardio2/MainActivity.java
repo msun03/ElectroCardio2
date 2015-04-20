@@ -182,42 +182,42 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         // TODO Auto-generated method stub
         switch(v.getId()){
-            case R.id.btConnect:
-                startActivity(new Intent("android.intent.action.BT1"));
-                break;
-            case R.id.btDisconnect:
-                Bluetooth.disconnect();
-                Toast.makeText(getApplicationContext(), "Disconnected!", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.bXminus:
-                if (xView > 1) xView--;
-                break;
-            case R.id.bXplus:
-                if (xView < 30) xView++;
-                break;
-            case R.id.tbLock:
-                if (lockToggle.isChecked()){
-                    Lock = true;
-                }else{
-                    Lock = false;
-                }
-                break;
-            case R.id.tbScroll:
-                if (scrollToggle.isChecked()){
-                    AutoScrollX = true;
-                }else{
-                    AutoScrollX = false;
-                }
-                break;
-            case R.id.streamToggle:
-                if (streamToggle.isChecked()){
-                    if(Bluetooth.connectedThread != null)
-                        Bluetooth.connectedThread.write("E");
-                } else {
-                    if (Bluetooth.connectedThread != null)
-                        Bluetooth.connectedThread.write("Q");
-                }
-                break;
+        case R.id.btConnect:
+            startActivity(new Intent("android.intent.action.BT1"));
+            break;
+        case R.id.btDisconnect:
+            Bluetooth.disconnect();
+            Toast.makeText(getApplicationContext(), "Disconnected!", Toast.LENGTH_SHORT).show();
+            break;
+        case R.id.bXminus:
+            if (xView > 1) xView--;
+            break;
+        case R.id.bXplus:
+            if (xView < 30) xView++;
+            break;
+        case R.id.tbLock:
+            if (lockToggle.isChecked()){
+                Lock = true;
+            }else{
+                Lock = false;
+            }
+            break;
+        case R.id.tbScroll:
+            if (scrollToggle.isChecked()){
+                AutoScrollX = true;
+            }else{
+                AutoScrollX = false;
+            }
+            break;
+        case R.id.streamToggle:
+            if (streamToggle.isChecked()){
+                if(Bluetooth.connectedThread != null)
+                    Bluetooth.connectedThread.write("E");
+            } else {
+                if (Bluetooth.connectedThread != null)
+                    Bluetooth.connectedThread.write("Q");
+            }
+            break;
         }
     }
 }

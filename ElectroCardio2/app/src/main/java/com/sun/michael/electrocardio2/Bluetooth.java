@@ -28,13 +28,12 @@ import android.widget.Toast;
 public class Bluetooth extends Activity implements OnItemClickListener{
 
     // Create variables
+    static Handler myHandler = new Handler();
+
+    static ConnectedThread connectedThread;
     public static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     protected static final int SUCCESS_CONNECT = 0;
     protected static final int MESSAGE_READ = 1;
-
-    static Handler myHandler = new Handler();
-    static ConnectedThread connectedThread;
-
     ArrayAdapter<String> listAdapter;
     ListView listView;
     static BluetoothAdapter bluetoothAdapter;
@@ -49,7 +48,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth);
         initialize();
-        if (bluetoothAdapter==null){
+        if (bluetoothAdapter == null){
             Toast.makeText(getApplicationContext(), "No bluetooth detected", Toast.LENGTH_SHORT).show();
             finish();
         }else{
@@ -81,8 +80,8 @@ public class Bluetooth extends Activity implements OnItemClickListener{
     }
 
     private void turnOnBluetooth() {
-        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        startActivityForResult(intent, 1);
+        Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        startActivityForResult(enableBluetoothIntent, 1);
     }
 
     private void getPairedDevices() {
@@ -95,14 +94,16 @@ public class Bluetooth extends Activity implements OnItemClickListener{
     }
 
     private void initialize(){
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        pairedDevices = new ArrayList<String>();
+        devices = new ArrayList<BluetoothDevice>();
+
         listView = (ListView)findViewById(R.id.listView);
-        listView.setOnItemClickListener(this);
         listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,0);
         listView.setAdapter(listAdapter);
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        pairedDevices = new ArrayList<String>();
-        filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        devices = new ArrayList<BluetoothDevice>();
+        listView.setOnItemClickListener(this);
+
         receiver = new BroadcastReceiver(){
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -138,6 +139,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(receiver, filter);
         filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(receiver, filter);
     }
 
     @Override
@@ -162,6 +164,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
             bluetoothAdapter.cancelDiscovery();
         }
         if (listAdapter.getItem(arg2).contains("(Paired)")){
+
             BluetoothDevice selectedDevice = devices.get(arg2);
             ConnectThread connect = new ConnectThread(selectedDevice);
             connect.start();
