@@ -169,7 +169,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
             ConnectThread connect = new ConnectThread(selectedDevice);
             connect.start();
         }else {
-            Toast.makeText(getApplicationContext(), "device is not paired", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Device is not paired", Toast.LENGTH_SHORT).show();
         }
     }
 

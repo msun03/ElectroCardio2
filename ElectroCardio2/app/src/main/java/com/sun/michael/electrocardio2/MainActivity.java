@@ -56,7 +56,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
             switch (msg.what) {
                 case Bluetooth.SUCCESS_CONNECT:
                     Bluetooth.connectedThread = new Bluetooth.ConnectedThread((BluetoothSocket)msg.obj);
-                    Toast.makeText(getApplicationContext(),"Connected!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Connected! Press Back to Return",Toast.LENGTH_SHORT).show();
                     //String s = "successfully connected";
                     Bluetooth.connectedThread.start();
                     break;
