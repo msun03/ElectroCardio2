@@ -75,7 +75,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
     /** Method for discovery nearby Bluetooth devices.*/
     private void startDiscovery() {
         // TODO Auto-generated method stub
-        bluetoothAdapter.cancelDiscovery();
+        //bluetoothAdapter.cancelDiscovery();
         bluetoothAdapter.startDiscovery();
     }
 
